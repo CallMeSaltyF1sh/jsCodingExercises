@@ -34,3 +34,28 @@ var letterCombinations = function(digits) {
     
     return result;
 };
+
+//更JS的方法，用reduce和map
+var letterCombinations = function(digits) {
+    let list = [['a','b','c'], ['d','e','f'], ['g','h','i'], ['j','k','l'], ['m','n','o'], ['p','q','r','s'], ['t','u','v'], ['w','x','y','z']];
+    
+    let reg = new RegExp('1', 'g');
+    digits = digits.replace(reg, '');
+    if(!digits) return [];
+    if(digits.length === 1) return list[parseInt(digits[0])-2];
+ 
+    let letters = digits.split('').map(item => {
+        return list[parseInt(item)-2];
+    });
+    let result;
+    
+    return letters.reduce((a,b) => {
+        result = [];
+        a.map(item0 => {
+            b.map(item1 => {
+                result.push(item0 + item1);
+            });
+        });
+        return result;
+    });
+ }
