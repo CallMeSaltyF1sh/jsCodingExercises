@@ -29,7 +29,7 @@ var swapPairs = function(head) {
 //非递归法
 var swapPairs = function(head) {
     let node = new ListNode(null),
-    let sign, prev, next;
+        sign, prev, next;
     
     node.next = head;
     sign = node;
