@@ -140,18 +140,18 @@ function deepClone3(target, map = new WeakMap()) {
     } else {
         //处理不能遍历的对象
         const Ctor = target.constructor;
-        switch(type){
+        switch (type) {
             case boolTag:
             case numberTag:
             case stringTag:
             case dateTag:
-            case regexpTag: 
+            case regexpTag:
                 return new Ctor(target);
-            case errorTag: 
+            case errorTag:
                 return new Error(target.message);
             case symbolTag:
                 return Object(Symbol.prototype.valueOf.call(target));
-            default: 
+            default:
                 return null;
         }
     }
@@ -253,4 +253,29 @@ jQuery.extend = jQuery.fn.extend = function () {
     }
 
     return target;
+}
+
+
+//vue版深拷贝
+function find(list, fn) {
+    return list.filter(fn)[0];
+}
+function deepCopy(obj, cache = []) {
+    if (obj === null || typeof obj !== 'object') {
+        return obj;
+    }
+
+    const hit = find(cache, c => c.original === obj);
+    if (hit) {
+        return hit.copy;
+    }
+
+    const copy = Array.isArray(obj) ? [] : {};
+    cache.push({
+        original: obj,
+        copy
+    });
+    Object.keys(obj).forEach(key => copy[key] = deepCopy(obj[key], cache));
+
+    return copy;
 }
