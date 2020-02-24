@@ -14,7 +14,8 @@ function distinct0(arr) {
 }
 //先排序再去掉相邻重复项（可改变顺序的话）
 //对象和NaN不去重
-//（用arr1试的时候里面如果包括两个数字，且这两个数字一样，则这个数字不被去重，过于迷幻）
+//只要测试数组含非数字元素sort排序就会出问题造成部分元素去重失效
+//纯数字数组适用于这个方法
 function distinct1(arr) {
     arr.sort((a, b) => (a - b));
     for (let i = 0, len = arr.length; i < len - 1; i++) {
@@ -77,9 +78,9 @@ function distinct7(arr) {
 
 //test
 const arr = [1, 1, 1, 2, 3, 5, 8, 9, 5, 3, 2];
-const arr1 = [1, 1, '1', '1', null, null, undefined, undefined, new String('1'), new String('1'), /a/, /a/, NaN, NaN, {a: 1}, {a: 1}];
+const arr1 = [1, 1, '1', '1', null, null, undefined, undefined, new String('1'), new String('1'), /a/, /a/, NaN, NaN, { a: 1 }, { a: 1 }];
 console.log(distinct6(arr1));
 
 //补充lodash去重的实现方法：
-//数组长度大于等于200时，创建Set经行去重
+//数组长度大于等于200时，创建Set去重
 //长度小于200时，使用双重循环去重（并添加NaN去重）
