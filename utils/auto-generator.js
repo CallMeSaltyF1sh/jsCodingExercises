@@ -29,7 +29,7 @@ function spawn(gen) {
                 step(() => g.next(val));
             }, err => {
                 step(() => g.throw(err));
-            })
+            });
         }
         step(() => g.next());
     });
@@ -42,3 +42,29 @@ function* testGen() {
     return 'end';
 }
 runner(testGen);
+
+
+//异步Generator自动执行器
+async function asyncRunner(asyncIterable, cnt = Infinity) {
+    const result = [];
+    const iterator = asyncIterable[Symbol.asyncIterator]();
+    while(result.length < cnt) {
+        const { value, done } = await iterator.next();
+        if(done) break;
+        result.push(value);
+    }
+    return result;
+}
+
+//test
+async function fn() {
+    async function* gen() {
+        yield 'a';
+        yield 'b';
+        yield 'c';
+    }
+    return await asyncRunner(gen());
+}
+fn().then(res => {
+    console.log(res);
+});
