@@ -78,3 +78,21 @@ function f(a, b) {
 }
 var obj = {name: 'nancy'}
 f.bind3(obj, 'a')('b')
+
+//考虑把bind返回的绑定函数作为构造函数用的情况（这种情况调用以后this指向构造函数的实例对象）
+Function.prototype.bind4 = function(context, ...args) {
+    const _this = this;
+
+    var fn = function() {
+        //如果this指向fn的实例，将绑定函数的this指向实例直接让实例获取值；否则将绑定函数的this指向context
+        return _this.apply(this instanceof fn ? this : context, args.concat(...arguments));
+    }
+    //增加一个中介f给fn添加调用bind的函数的原型属性
+    //不能用fn.prototype=this.prototype直接赋值
+    //因为如果直接赋值的话，返回的绑定函数修改原型会同时修改调用bind的原函数的原型，因为引用是同一个
+    //下面的写法等同于fn.prototype = Object.create(this.prototype)
+    var f = function() {}
+    f.prototype = this.prototype;
+    fn.prototype = new f(); 
+    return fn;
+}
