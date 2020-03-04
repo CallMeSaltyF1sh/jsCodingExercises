@@ -1,6 +1,6 @@
 /**
  * 针对数字数组的全排列
- * @param {Array} arr 
+ * @param {number[]} arr 
  * @param {boolean} unique 是否去重
  */
 function permutationWrapper(arr, unique = true) {

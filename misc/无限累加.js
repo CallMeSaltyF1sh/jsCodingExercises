@@ -30,3 +30,28 @@ function curryingAdd() {
     }
     return _adder;
 }
+
+
+//补充
+/**
+ * 实现sum函数满足：
+ * sum(1,2,3).valueOf()   // 6
+ * sum(1,2)(3).valueOf()   // 6
+ * sum(1)(2,3)(4).valueOf()   // 10
+ * sum(1)(2,3,4).valueOf()   // 10
+ * sum(1)(2)(3)(4).valueOf()   // 10
+ */
+function sum(...args) {
+    function _sum(..._args) {
+        if (_args.length !== 0) {
+            _sum.a += _args.reduce((a, b) => a + b, 0);
+        }
+        return _sum;
+    }
+    _sum.a = args.length > 0 ? args.reduce((a, b) => a + b, 0) : 0;
+    _sum.valueOf = function () {
+        console.log(_sum.a)
+    }
+    return _sum;
+}
+sum(1, 2)(3, 4, 5)(5)(5).valueOf();   // 25

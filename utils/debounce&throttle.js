@@ -83,14 +83,14 @@ function throttle2(func, delay = 300) {
     return function (...args) {
         let currTime = Date.now(),
             remaining = delay - (currTime - startTime);
-        if (timer) {
-            clearTimeout(timer);
-        }
+        timer && clearTimeout(timer);
         if (remaining <= 0) {
             func.apply(this, args);
             startTime = Date.now();
         } else {
-            timer = setTimeout(func, remaining);
+            timer = setTimeout(() => {
+                func.apply(this, args);
+            }, remaining);
         }
     }
 }
@@ -102,7 +102,7 @@ function throttle3(func, threshhold = 300) {
     return function () {
         let currTime = +new Date;   //神奇的写法
         if (prevTime && currTime < prevTime + threshhold) {
-            clearTimeout(timer);
+            timer && clearTimeout(timer);
             timer = setTimeout(() => {
                 prevTime = currTime;
                 func.apply(this, arguments);
