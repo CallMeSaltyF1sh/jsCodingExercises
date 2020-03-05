@@ -8,15 +8,26 @@ function shuffle0(arr = []) {
         return result.concat(curr.val);
     }, []);
 }
-console.log(shuffle0([1,2,3,4,5,6,7,8,9,10]));
+
+//随机挑一个加到新数组
+function shuffle1(arr = []) {
+    const res = [];
+    while (arr.length) {
+        let index = Math.floor(Math.random() * arr.length);
+        res.push(arr[index]);
+        arr.splice(index, 1);
+    }
+    return res;
+}
 
 //Fisher-Yates
-function shuffle1(arr = []) {
+function shuffle2(arr = []) {
     let i = arr.length;
-    while(i > 1) {
+    while (i > 1) {
         let index = Math.floor(Math.random() * i--);
         [arr[i], arr[index]] = [arr[index], arr[i]];
     }
     return arr;
 }
-console.log(shuffle1([1,2,3,4,5,6,7,8,9,10]));
+
+console.log(shuffle2([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]));
