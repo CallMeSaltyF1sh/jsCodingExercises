@@ -12,11 +12,11 @@ function decounce0(func, delay = 300) {
 
 //添加是否立即执行的选项
 function debounce1(func, delay = 300, immediate = true) {
-    let timer;
+    let timer, result;
     return function (...args) {
         timer && clearTimeout(timer);
         if (immediate) {
-            if (!timer) func.apply(this, args);
+            if (!timer) result = func.apply(this, args);
             timer = setTimeout(() => {
                 timer = null;
             }, delay);
@@ -25,16 +25,17 @@ function debounce1(func, delay = 300, immediate = true) {
                 func.apply(this, args);
             }, delay);
         }
+        return result;
     }
 }
 
 //添加cancel
 function debounce2(func, delay = 300, immediate = true) {
-    let timer;
+    let timer, result;
     const debounce = function (...args) {
         timer && clearTimeout(timer);
         if (immediate) {
-            if (!timer) func.apply(this, args);
+            if (!timer) result = func.apply(this, args);
             timer = setTimeout(() => {
                 timer = null;
             }, delay);
@@ -43,6 +44,7 @@ function debounce2(func, delay = 300, immediate = true) {
                 func.apply(this, args);
             }, delay);
         }
+        return result;
     };
     debounce.cancel = function () {
         clearTimeout(timer);
@@ -55,12 +57,12 @@ function debounce2(func, delay = 300, immediate = true) {
 //节流
 //时间戳
 function throttle0(func, delay = 300) {
-    let prevTime = new Date();
+    let prevTime = +new Date();
     return function (...args) {
-        let currTime = new Date();
+        let currTime = +new Date();
         if (currTime - prevTime > delay) {
             func.apply(this, args);
-            prevTime = new Date();
+            prevTime = currTime;
         }
     }
 }
@@ -76,31 +78,14 @@ function throttle1(func, delay = 300) {
         }
     }
 }
-//时间戳+定时器
-function throttle2(func, delay = 300) {
-    let timer = null,
-        startTime = Date.now();
-    return function (...args) {
-        let currTime = Date.now(),
-            remaining = delay - (currTime - startTime);
-        timer && clearTimeout(timer);
-        if (remaining <= 0) {
-            func.apply(this, args);
-            startTime = Date.now();
-        } else {
-            timer = setTimeout(() => {
-                func.apply(this, args);
-            }, remaining);
-        }
-    }
-}
 
-//另一种
-function throttle3(func, threshhold = 300) {
+
+//定时器+时间戳
+function throttle2(func, threshhold = 300) {
     let prevTime,
         timer;
     return function () {
-        let currTime = +new Date;   //神奇的写法
+        let currTime = +new Date();
         if (prevTime && currTime < prevTime + threshhold) {
             timer && clearTimeout(timer);
             timer = setTimeout(() => {
@@ -114,9 +99,9 @@ function throttle3(func, threshhold = 300) {
     };
 }
 
-//添加leading和trailing选项
-function throttle4(func, delay=300, { leading=true, trailing=true }) {
-    let prevTime = new Date(),
+//定时器+时间戳（添加leading和trailing选项，这两个不能同时为false）
+function throttle3(func, delay=300, { leading=true, trailing=true }) {
+    let prevTime = +new Date(),
         timer;
     const later = (...args) => {
         timer && clearTimeout(timer);
@@ -126,8 +111,8 @@ function throttle4(func, delay=300, { leading=true, trailing=true }) {
         }, delay);
     };
     return function(...args) {
-        let currTime = new Date();
-        if(!leading) return later(args);
+        let currTime = +new Date();
+        if(!leading) return later(args);  //由于leading是false，trailing强制是true
         if(currTime - prevTime > wait) {
             func.apply(this, args);
             prevTime = currTime;
@@ -135,4 +120,36 @@ function throttle4(func, delay=300, { leading=true, trailing=true }) {
             later(args);
         }
     }
+}
+
+//进一步完善
+function throttle4(func, delay=300, { leading=true, trailing=true }) {
+    let prev = leading ? 0 : +new Date();
+        remaining = 0,
+        timer;
+    const later = (...args) => {
+        timer && clearTimeout(timer);
+        timer = setTimeout(() => {
+            func.apply(this, args);
+            timer = null;
+            prev = +new Date();
+        }, remaining);
+    };
+    const throttle = (...args) => {
+        let curr = +new Date();
+        remaining = delay - (curr - prev);
+        if(!leading) return later(args);
+        if(remaining <= 0) {
+            prev = curr;
+            func.apply(this, args);
+        } else if(trailing) {
+            later(args);
+        }
+    };
+    throttle.cancel = function() {
+        clearTimeout(timer);
+        timer = null;
+        prev = 0;
+    }
+    return throttle;
 }

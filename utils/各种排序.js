@@ -1,4 +1,4 @@
-//冒泡排序 最佳O(n);最差O(n2)
+//冒泡排序 最佳O(n);最差O(n2);稳定
 function bubble(arr) {
     for (let i = 0, len = arr.length; i < len - 1; i++) {
         for (let j = 0; j < len - 1 - i; j++) {
@@ -27,7 +27,7 @@ function improvedBubble(arr) {
     return arr;
 }
 
-//选择排序 O(n2)稳定
+//选择排序 O(n2)
 function select(arr) {
     let min = 0;  //记录每轮最小值下标
     for (let i = 0, len = arr.length; i < len; i++) {
@@ -42,7 +42,7 @@ function select(arr) {
     return arr;
 }
 
-//插入排序 最佳O(n);最差O(n2)
+//插入排序 最佳O(n);最差O(n2);稳定
 //每轮从后往前遍历当前位置前面的序列，找到第一个大于前一位的位置放下，否则一直向前交换
 function insert(arr) {
     let j, temp;
@@ -73,7 +73,7 @@ function shell(arr) {
     return arr;
 }
 
-//归并排序 最佳O(n);最差O(nlogn)
+//归并排序 最佳O(n);最差O(nlogn);稳定
 //将数组反复二分直到分成单个元素，然后再两两合并，合并的时候进行排序
 function mergeSort(arr) {
     const len = arr.length;
@@ -132,7 +132,7 @@ function quick(arr) {
     ];
 }
 
-//堆排序 O(nlogn)稳定
+//堆排序 O(nlogn)
 //将初始数组构建成大顶堆（初始无序区），每次把最大的元素交换到顶部（即arr[0]）
 //然后把堆顶元素与无序区最后一个元素交换值，交换以后最后一个元素进入有序区（即不再参与排序）
 //然后再重新构建大顶堆，直到所有元素都进入有序区
@@ -165,4 +165,25 @@ function intoHeap(arr, index, size) {
     }
 }
 
-console.log(heapSort([1, 3, 2, 4, 8, 5, 6, 10, 9]));
+//计数排序 O(n+k)主要取决于待排数组最大值和最小值的差值
+//找出最大最小值，统计数组中各个值出现的次数
+function countSort(arr) {
+    let min = arr[0],
+        max = min,
+        temp = [],
+        result = [];
+    for(let item of arr) {
+        if(item < min) min = item;
+        if(item > max) max = item;
+        temp[item] = temp[item] ? temp[item] + 1 : 1;
+    }
+    for(let i=min; i<=max; i++) {
+        while(temp[i]) {
+            result.push(i);
+            temp[i] --;
+        }
+    }
+    return result;
+}
+
+console.log(countSort([1, 3, 2, 4, 8, 5, 6, 10, 9, 2, 7, 6]));
