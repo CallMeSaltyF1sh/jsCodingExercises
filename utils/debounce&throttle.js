@@ -113,7 +113,7 @@ function throttle3(func, delay=300, { leading=true, trailing=true }) {
     return function(...args) {
         let currTime = +new Date();
         if(!leading) return later(args);  //由于leading是false，trailing强制是true
-        if(currTime - prevTime > wait) {
+        if(currTime - prevTime > delay) {
             func.apply(this, args);
             prevTime = currTime;
         } else if(trailing) {
@@ -124,7 +124,7 @@ function throttle3(func, delay=300, { leading=true, trailing=true }) {
 
 //进一步完善
 function throttle4(func, delay=300, { leading=true, trailing=true }) {
-    let prev = leading ? 0 : +new Date();
+    let prev = leading ? 0 : +new Date(),
         remaining = 0,
         timer;
     const later = (...args) => {
@@ -133,7 +133,7 @@ function throttle4(func, delay=300, { leading=true, trailing=true }) {
             func.apply(this, args);
             timer = null;
             prev = +new Date();
-        }, remaining);
+        }, delay);   //这里如果用remaining的话就算leading是false，在超过delay以后触发还是会立即调用
     };
     const throttle = (...args) => {
         let curr = +new Date();
