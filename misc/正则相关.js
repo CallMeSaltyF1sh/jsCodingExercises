@@ -26,3 +26,13 @@ function format2(num) {
     return n1 + (n2 ? ('.' + n2) : '');
 }
 console.log(format2(6666666666666.66666));
+
+/**
+ * 把短横线命名换成驼峰命名
+ */
+function convert(name) {
+    return name.replace(/-\w/g, function(match) {
+        return match.slice(1).toUpperCase();
+    });
+}
+console.log(convert('this-is-a-test'));
