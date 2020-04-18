@@ -36,3 +36,47 @@ function convert(name) {
     });
 }
 console.log(convert('this-is-a-test'));
+
+
+/**
+ * 日期转换举例
+ */
+function changeDateFormat(date) {
+    return date.replace(/(\d+)-(\d+)-(\d+)/, '$1年$2月$3日');
+}
+
+/**
+ * trim
+ */
+function trim(str) {
+    return str.replace(/(^\s+)|(\s+$)/g, '');
+}
+
+/**
+ * 提取url中的参数名、参数值
+ */
+function getUrlParamObj() {
+    let obj = {};
+    let params = window.location.search.substr(1);
+    params.replace(/([^&=]+)=([^&=]*)/gi, function(rs, $1, $2) {
+        obj[$1] = decodeURIComponent($2);
+    });
+    return obj;
+}
+
+/**
+ * 解析出对象类型
+ */
+function getObjType(obj) {
+    let res = Object.prototype.toString.call(obj);
+    res = res.replace(/\[object\s(\w+)\]/, '$1');
+    return res.toLowerCase();
+}
+
+/**
+ * 手机号中间位转成*
+ */
+function telFormat(tel) {
+    tel += '';
+    return tel.replace(/(\d{3})(\d{4})(\d{4})/, '$1****$3');
+}
