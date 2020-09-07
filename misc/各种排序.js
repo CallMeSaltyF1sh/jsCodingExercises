@@ -105,6 +105,35 @@ function merge(left, right) {
     return res;
 }
 
+// 非递归版归并
+function merge2(left, right) {
+    const result = [];
+    while (left.length && right.length) {
+        if (left[0] < right[0]) {
+            result.push(left.shift());
+        } else {
+            result.push(right.shift());
+        }
+    }
+    return result.concat(left).concat(right);
+}
+function mergeSort2(arr) {
+    if (arr.length <= 1) {
+        return arr;
+    }
+    const len = arr.length;
+    const temp = arr.map(item => [item]);
+    temp.push([]);
+    for (let i = len; i > 1; i = parseInt((i + 1) / 2)) {
+        let j, k;
+        for (j = 0, k = 0; k <= i; j++, k += 2) {
+            temp[j] = merge2(temp[k], temp[k+1]);
+        }
+        temp[j] = [];
+    }
+    return temp[0];
+}
+
 //快速排序 最佳O(nlogn);最差O(n2)
 //从数组中挑一个作为基准值，遍历数组把比基准小的放左边，比基准大的放右边
 //然后继续对分出来的左右两部分进行如上操作
@@ -172,15 +201,15 @@ function countSort(arr) {
         max = min,
         temp = [],
         result = [];
-    for(let item of arr) {
-        if(item < min) min = item;
-        if(item > max) max = item;
+    for (let item of arr) {
+        if (item < min) min = item;
+        if (item > max) max = item;
         temp[item] = temp[item] ? temp[item] + 1 : 1;
     }
-    for(let i=min; i<=max; i++) {
-        while(temp[i]) {
+    for (let i = min; i <= max; i++) {
+        while (temp[i]) {
             result.push(i);
-            temp[i] --;
+            temp[i]--;
         }
     }
     return result;
